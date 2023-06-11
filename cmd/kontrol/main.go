@@ -18,6 +18,10 @@ func main() {
 		err = initCmd()
 	case "cat-file":
 		err = catFileCmd(os.Args[1:])
+	//compute object id and optionally creates a blob from a file
+	//'kontrol hash-object -w <file>' -w is for writing the blob to disk
+	case "hash-object":
+		err = hashObjectCmd(os.Args[1:])
 	default:
 		err = fmt.Errorf("unknown command %s", command)
 	}
