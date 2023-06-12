@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"compress/zlib"
 	"crypto/sha1"
 	"encoding/hex"
 	"errors"
@@ -56,7 +57,7 @@ func hashObjectCmd(args []string) (err error) {
 func hashObject(src io.Reader, typ string, size int64) (string, error) {
 	var buff bytes.Buffer
 
-	err := encodeObject(&buff, size, src)
+	err := encodeObject(&buff, src, typ, size)
 
 	fileContent, err := compress(buff.Bytes())
 	if err != nil {
@@ -81,9 +82,29 @@ func hashObject(src io.Reader, typ string, size int64) (string, error) {
 	return name, nil
 }
 
-func encodeObject(typ string, size int64, src io.Reader) (string, error) {
-	// TODO
+func encodeObject(dst io.Writer, src io.Reader, typ string, size int64) error {
+	_, err := fmt.Fprintf(dst, "%v %d\000", typ, size)
+	if err != nil {
+		return err
+	}
+	_, err = io.Copy(dst, src)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
+// zlib implements reading and writing of zlib format compressed data
 func compress(data []byte) ([]byte, error) {
+	var buf bytes.Buffer
+	zw := zlib.NewWriter(&buf)
+	_, err := zw.Write(data)
+	if err != nil {
+		return nil, fmt.Errorf("error occured writing to zlib writer: %v", err)
+	}
+	err = zw.Close()
+	if err != nil {
+		return nil, fmt.Errorf("error occured closing zlib writer: %v", err)
+	}
+	return buf.Bytes(), nil
 }

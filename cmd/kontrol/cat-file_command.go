@@ -21,7 +21,9 @@ func catFileCmd(args []string) (err error) {
 	blobHash := args[2]
 	flag := args[1]
 	switch flag {
-	//TODO: case "-t":
+	case "-t":
+		//TODO
+		//types: tree, commit, blob, tag
 	case "-p":
 		//length of blobhash in git is 40: 21be5453b240166dc5249e4878e71145ae55e126
 		//while length of sha1.Size is 20
