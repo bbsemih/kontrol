@@ -14,7 +14,7 @@ func initCmd() error {
 	//output of 'cat .git/HEAD' is: 'ref: refs/heads/main'
 	headFileContents := []byte("ref: refs/heads/main\n")
 	if err := os.WriteFile(".git/HEAD", headFileContents, 0644); err != nil {
-		return fmt.Errorf("error ocured writing '.git/HEAD': %v", err)
+		return fmt.Errorf("error occured writing '.git/HEAD': %v", err)
 	}
 	fmt.Println("Initialized a git repository")
 	return nil

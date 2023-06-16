@@ -11,9 +11,7 @@ import (
 	"github.com/bbsemih/kontrol/object"
 )
 
-// Steps in command: 'kontrol ls-tree --name-only <tree-ish>':
-// find the tree object in the .git/objects directory
-// print the contents of the tree object to stdout
+// 'kontrol ls-tree --name-only <tree-ish>':
 // the contents of the tree object are the mode, type, object id, and file name
 func lsTreeCmd(args []string) (err error) {
 	if len(args) < 3 {
@@ -62,7 +60,9 @@ func Load(r io.Reader) (typ string, content []byte, err error) {
 		}
 	}()
 
-	typ, content, err = object.parseObject(zr)
-
+	typ, content, err = object.ParseObject(zr)
+	if err != nil {
+		return "", nil, fmt.Errorf("parse object: %w", err)
+	}
 	return typ, content, nil
 }
